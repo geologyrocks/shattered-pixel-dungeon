@@ -1855,7 +1855,8 @@ public class Hero extends Char {
 		boolean smthFound = false;
 
 		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
-		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
+		// Big searching distance!
+		int distance = heroClass == HeroClass.ROGUE ? 4 : 4;
 		if (hasTalent(Talent.WIDE_SEARCH)) distance++;
 		
 		boolean foresight = buff(Foresight.class) != null;
@@ -1918,13 +1919,13 @@ public class Hero extends Char {
 						} else if (cursed) {
 							chance = 0f;
 							
-						//unintentional trap detection scales from 40% at floor 0 to 30% at floor 25
+						//unintentional trap detection always succeeds
 						} else if (Dungeon.level.map[p] == Terrain.SECRET_TRAP) {
-							chance = 0.4f - (Dungeon.depth / 250f);
-							
-						//unintentional door detection scales from 20% at floor 0 to 0% at floor 20
+							chance = 1f - (Dungeon.depth / 250f);
+
+						//unintentional searches always succeed
 						} else {
-							chance = 0.2f - (Dungeon.depth / 100f);
+							chance = 1f - (Dungeon.depth / 100f);
 						}
 						
 						if (Random.Float() < chance) {
