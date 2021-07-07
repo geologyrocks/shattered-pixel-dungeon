@@ -574,7 +574,7 @@ public abstract class Level implements Bundlable {
 		} else if (Dungeon.level.feeling == Feeling.DARK){
 			return 2*TIME_TO_RESPAWN/3f;
 		} else {
-			return TIME_TO_RESPAWN;
+			return TIME_TO_RESPAWN/3f;
 		}
 	}
 	
