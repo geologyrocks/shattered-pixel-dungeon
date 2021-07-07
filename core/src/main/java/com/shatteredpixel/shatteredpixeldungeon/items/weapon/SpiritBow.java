@@ -266,9 +266,7 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public int level() {
-		int level = Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
-		if (curseInfusionBonus) level += 1 + level/6;
-		return level;
+		return (Dungeon.hero == null ? 0 : 10) + (curseInfusionBonus ? 1 : 0);
 	}
 
 	@Override
