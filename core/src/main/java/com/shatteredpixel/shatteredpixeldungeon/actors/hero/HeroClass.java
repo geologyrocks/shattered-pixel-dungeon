@@ -43,27 +43,50 @@ import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
@@ -140,42 +163,105 @@ public enum HeroClass {
 	}
 
 	private static void initWarrior( Hero hero ) {
-		(hero.belongings.weapon = new WornShortsword()).identify();
+		startEasyMode(hero, 3);
+		
+		Greatsword sword = (Greatsword)getWeapon("greatsword");
+
 		ThrowingStone stones = new ThrowingStone();
-		stones.quantity(3).collect();
+		stones.quantity(10).collect();
 		Dungeon.quickslot.setSlot(0, stones);
+		
+		PlateArmor plateArmor = new PlateArmor();
+		plateArmor.identify().collect();
 
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
+			hero.belongings.armor.inscribe();
 		}
+
+		HornOfPlenty hornOfPlenty = new HornOfPlenty();
+		(hero.belongings.artifact = hornOfPlenty).identify();
+		hero.belongings.artifact.activate( hero );
+
+		RingOfMight ringOfMight = new RingOfMight();
+		(hero.belongings.ring = ringOfMight).identify();
+		hero.belongings.ring.activate( hero );
+		ringOfMight.upgrade();
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
 	}
 
 	private static void initMage( Hero hero ) {
-		MagesStaff staff;
+		startEasyMode(hero, 3);
 
-		staff = new MagesStaff(new WandOfMagicMissile());
-
+		MagesStaff staff = (MagesStaff)getWeapon("magesStaff");
 		(hero.belongings.weapon = staff).identify();
 		hero.belongings.weapon.activate(hero);
-
 		Dungeon.quickslot.setSlot(0, staff);
+
+		UnstableSpellbook spellbook = new UnstableSpellbook();
+		(hero.belongings.artifact = spellbook).identify();
+		hero.belongings.artifact.activate( hero );
+
+		RingOfEnergy ringOfEnergy = new RingOfEnergy();
+		(hero.belongings.ring = ringOfEnergy).identify();
+		hero.belongings.ring.activate( hero );
+		ringOfEnergy.upgrade();
+		
+		WandOfBlastWave wandOfBlastWave = new WandOfBlastWave();
+		wandOfBlastWave.identify().collect();
+		WandOfCorrosion wandOfCorrosion = new WandOfCorrosion();
+		wandOfCorrosion.identify().collect();
+		WandOfCorruption wandOfCorruption = new WandOfCorruption();
+		wandOfCorruption.identify().collect();
+		WandOfDisintegration wandOfDisintegration = new WandOfDisintegration();
+		wandOfDisintegration.identify().collect();
+		WandOfFireblast wandOfFireblast = new WandOfFireblast();
+		wandOfFireblast.identify().collect();
+		WandOfFrost wandOfFrost = new WandOfFrost();
+		wandOfFrost.identify().collect();
+		WandOfLightning wandOfLightning = new WandOfLightning();
+		wandOfLightning.identify().collect();
+		WandOfLivingEarth wandOfLivingEarth = new WandOfLivingEarth();
+		wandOfLivingEarth.identify().collect();
+		WandOfPrismaticLight wandOfPrismaticLight = new WandOfPrismaticLight();
+		wandOfPrismaticLight.identify().collect();
+		WandOfRegrowth wandOfRegrowth = new WandOfRegrowth();
+		wandOfRegrowth.identify().collect();
+		WandOfTransfusion wandOfTransfusion = new WandOfTransfusion();
+		wandOfTransfusion.identify().collect();
+		WandOfWarding wandOfWarding = new WandOfWarding();
+		wandOfWarding.identify().collect();
+		
+		// CorpseDust corpseDust = new CorpseDust();
+		// corpseDust.doPickUp(hero);
+
+		AquaBlast aquaBlast = new AquaBlast();
+		aquaBlast.quantity(99999).collect();
 
 		new ScrollOfUpgrade().identify();
 		new PotionOfLiquidFlame().identify();
 	}
 
 	private static void initRogue( Hero hero ) {
-		(hero.belongings.weapon = new Dagger()).identify();
+		startEasyMode(hero,3);
+
+		AssassinsBlade assassinsBlade = (AssassinsBlade)getWeapon("assassinsBlade");
+		assassinsBlade.doEquip(hero);
 
 		CloakOfShadows cloak = new CloakOfShadows();
 		(hero.belongings.artifact = cloak).identify();
 		hero.belongings.artifact.activate( hero );
+		upgradeItem(cloak, 10);
 
 		ThrowingKnife knives = new ThrowingKnife();
-		knives.quantity(3).collect();
+		knives.quantity(10).collect();
+
+		RingOfHaste ringOfHaste = new RingOfHaste();
+		(hero.belongings.ring = ringOfHaste).identify();
+		hero.belongings.ring.activate( hero );
+		ringOfHaste.upgrade();
 
 		Dungeon.quickslot.setSlot(0, cloak);
 		Dungeon.quickslot.setSlot(1, knives);
@@ -184,16 +270,100 @@ public enum HeroClass {
 		new PotionOfInvisibility().identify();
 	}
 
+	private static void upgradeItem(Item item, int upgradeCount) {
+		for (int i = 0; i < upgradeCount ; i++) {
+			item.upgrade();
+		}
+	}
+
 	private static void initHuntress( Hero hero ) {
+		startEasyMode(hero, 4);
 
 		(hero.belongings.weapon = new Gloves()).identify();
-		SpiritBow bow = new SpiritBow();
-		bow.identify().collect();
+		SpiritBow bow = (SpiritBow)getWeapon("spiritBow");
 
-		Dungeon.quickslot.setSlot(0, bow);
+		SandalsOfNature sandals = new SandalsOfNature();
+		(hero.belongings.artifact = sandals).identify();
+		hero.belongings.artifact.activate( hero );
+
+		RingOfSharpshooting ring = new RingOfSharpshooting();
+		(hero.belongings.ring = ring).identify();
+		ring.upgrade();
+		hero.belongings.ring.activate( hero );
+
+//		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
+//		crossbow.doEquip(hero);
+
+//		Dart darts = new Dart();
+//		darts.quantity(999999).collect();
+//		Dungeon.quickslot.setSlot(1, darts);
 
 		new PotionOfMindVision().identify();
 		new ScrollOfLullaby().identify();
+	}
+
+	private static Weapon getWeapon(String weapon) {
+		if (weapon == "crossbow"){
+			Crossbow crossbow = new Crossbow();
+			crossbow.identify().collect();
+			crossbow.enchant();
+			return crossbow;
+		}
+		else if (weapon == "assassinsBlade"){
+			AssassinsBlade assassinsBlade = new AssassinsBlade();
+			assassinsBlade.identify().collect();
+			assassinsBlade.enchant();
+			return assassinsBlade;
+		}
+		else if (weapon == "magesStaff"){
+			MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
+			staff.identify().collect();
+			staff.enchant();
+			return staff;
+		}
+		else if (weapon == "greatsword"){
+			Greatsword sword = new Greatsword();
+			sword.identify().collect();
+			sword.enchant();
+			return sword;
+		}
+		else {
+			SpiritBow bow = new SpiritBow();
+			bow.identify().collect();
+			bow.enchant();
+			return bow;
+		}
+	}
+
+	private static void startEasyMode(Hero hero, int souCount) {
+		new VelvetPouch().collect();
+		Dungeon.LimitedDrops.VELVET_POUCH.drop();
+
+		new ScrollHolder().collect();
+		Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
+
+		new PotionBandolier().collect();
+		Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
+
+		new MagicalHolster().collect();
+		Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
+
+		ScrollOfUpgrade upgradeScroll = new ScrollOfUpgrade();
+		upgradeScroll.quantity(souCount).collect();
+		upgradeScroll.identify();
+		Dungeon.quickslot.setSlot(3, upgradeScroll);
+
+		PotionOfStrength potionOfStrength = new PotionOfStrength();
+		potionOfStrength.quantity(4).collect();
+		potionOfStrength.identify();
+		Dungeon.quickslot.setSlot(2, potionOfStrength);
+
+		FeatherFall featherFall = new FeatherFall();
+		featherFall.quantity(4).collect();
+
+		ScrollOfEnchantment soe = new ScrollOfEnchantment();
+		soe.quantity(10).collect();
+		Dungeon.quickslot.setSlot(1, upgradeScroll);
 	}
 
 	public String title() {
