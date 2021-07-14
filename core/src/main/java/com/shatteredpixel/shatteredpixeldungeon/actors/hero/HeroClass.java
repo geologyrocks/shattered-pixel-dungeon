@@ -329,9 +329,6 @@ public enum HeroClass {
 	}
 
 	private static void startEasyMode(Hero hero, int souCount) {
-		new VelvetPouch().collect();
-		Dungeon.LimitedDrops.VELVET_POUCH.drop();
-
 		new ScrollHolder().collect();
 		Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
 
