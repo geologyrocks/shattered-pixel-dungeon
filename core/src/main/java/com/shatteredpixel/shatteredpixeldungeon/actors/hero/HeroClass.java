@@ -253,7 +253,6 @@ public enum HeroClass {
 		CloakOfShadows cloak = new CloakOfShadows();
 		(hero.belongings.artifact = cloak).identify();
 		hero.belongings.artifact.activate( hero );
-		upgradeItem(cloak, 10);
 
 		ThrowingKnife knives = new ThrowingKnife();
 		knives.quantity(10).collect();
@@ -268,12 +267,6 @@ public enum HeroClass {
 
 		new ScrollOfMagicMapping().identify();
 		new PotionOfInvisibility().identify();
-	}
-
-	private static void upgradeItem(Item item, int upgradeCount) {
-		for (int i = 0; i < upgradeCount ; i++) {
-			item.upgrade();
-		}
 	}
 
 	private static void initHuntress( Hero hero ) {
