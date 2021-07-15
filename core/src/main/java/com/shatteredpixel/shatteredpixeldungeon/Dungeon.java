@@ -396,6 +396,11 @@ public class Dungeon {
 	}
 
 	public static boolean posNeeded() {
+		if (depth <= 10)
+		{
+			LimitedDrops.STRENGTH_POTIONS.count--;
+			return false;
+		}
 		//2 POS each floor set
 		if (depth > 10) {
 			int posLeftThisSet = 2 - (LimitedDrops.STRENGTH_POTIONS.count - (depth / 5) * 2);
@@ -414,6 +419,11 @@ public class Dungeon {
 	}
 	
 	public static boolean souNeeded() {
+		if (depth <= 10)
+		{
+			LimitedDrops.UPGRADE_SCROLLS.count--;
+			return false;
+		}
 		if (depth > 10) {
 			int souLeftThisSet;
 			//3 SOU each floor set, 1.5 (rounded) on forbidden runes challenge
