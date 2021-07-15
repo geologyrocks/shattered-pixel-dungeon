@@ -161,17 +161,17 @@ public class WandOfCorruption extends Wand {
 			if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
 				corruptingPower = enemyResist - 0.001f;
 			}
-			
-			if (corruptingPower > enemyResist){
-				corruptEnemy( enemy );
-			} else {
-				float debuffChance = corruptingPower / enemyResist;
-				if (Random.Float() < debuffChance){
-					debuffEnemy( enemy, MAJOR_DEBUFFS);
-				} else {
-					debuffEnemy( enemy, MINOR_DEBUFFS);
-				}
-			}
+			corruptEnemy( enemy );
+			// if (corruptingPower > enemyResist){
+			// 	corruptEnemy( enemy );
+			// } else {
+			// 	float debuffChance = corruptingPower / enemyResist;
+			// 	if (Random.Float() < debuffChance){
+			// 		debuffEnemy( enemy, MAJOR_DEBUFFS);
+			// 	} else {
+			// 		debuffEnemy( enemy, MINOR_DEBUFFS);
+			// 	}
+			// }
 
 			wandProc(ch, chargesPerCast());
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 0.8f * Random.Float(0.87f, 1.15f) );
