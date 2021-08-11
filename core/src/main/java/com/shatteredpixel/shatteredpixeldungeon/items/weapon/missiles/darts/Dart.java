@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -49,9 +50,13 @@ public class Dart extends MissileWeapon {
 		hitSoundPitch = 1.3f;
 		
 		tier = 1;
-		
-		//infinite, even with penalties
-		baseUses = 1000;
+		if (Dungeon.hero.heroClass == HeroClass.ROGUE || Dungeon.hero.heroClass == HeroClass.HUNTRESS){
+			// single-use for ease
+			baseUses = 1;
+		} else{
+			//infinite, even with penalties
+			baseUses = 1000;
+		}
 	}
 	
 	protected static final String AC_TIP = "TIP";
