@@ -294,38 +294,32 @@ public enum HeroClass {
 		new ScrollOfLullaby().identify();
 	}
 
-	private static void upgradeItem(Item item, int upgradeCount) {
-		for (int i = 0; i < upgradeCount ; i++) {
-			item.upgrade();
-		}
-	}
-
 	private static Weapon getWeapon(String weapon) {
 		if (weapon == "crossbow"){
 			Crossbow crossbow = new Crossbow();
 			crossbow.identify().collect();
-			upgradeItem(crossbow, 10);
+			crossbow.upgrade(10);
 			crossbow.enchant();
 			return crossbow;
 		}
 		else if (weapon == "assassinsBlade"){
 			AssassinsBlade assassinsBlade = new AssassinsBlade();
 			assassinsBlade.identify().collect();
-			upgradeItem(assassinsBlade, 10);
+			assassinsBlade.upgrade(10);
 			assassinsBlade.enchant();
 			return assassinsBlade;
 		}
 		else if (weapon == "magesStaff"){
 			MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
 			staff.identify().collect();
-			upgradeItem(staff, 10);
+			staff.upgrade(10);
 			staff.enchant();
 			return staff;
 		}
 		else if (weapon == "warhammer"){
 			WarHammer hammer = new WarHammer();
 			hammer.identify().collect();
-			upgradeItem(hammer, 10);
+			hammer.upgrade(10);
 			hammer.enchant();
 			return hammer;
 		}
