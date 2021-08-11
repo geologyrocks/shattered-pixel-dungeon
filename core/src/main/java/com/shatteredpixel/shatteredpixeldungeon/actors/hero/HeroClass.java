@@ -138,14 +138,6 @@ public enum HeroClass {
 				initHuntress( hero );
 				break;
 		}
-
-		for (int s = 0; s < QuickSlot.SIZE; s++){
-			if (Dungeon.quickslot.getItem(s) == null){
-				Dungeon.quickslot.setSlot(s, waterskin);
-				break;
-			}
-		}
-
 	}
 
 	public Badges.Badge masteryBadge() {
