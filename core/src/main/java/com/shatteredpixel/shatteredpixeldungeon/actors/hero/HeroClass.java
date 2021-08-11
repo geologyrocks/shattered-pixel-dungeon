@@ -145,21 +145,11 @@ public enum HeroClass {
 			case HUNTRESS:
 				initHuntress( hero );
 				break;
-
+				
 			case DUELIST:
 				initDuelist( hero );
 				break;
 		}
-
-		if (SPDSettings.quickslotWaterskin()) {
-			for (int s = 0; s < QuickSlot.SIZE; s++) {
-				if (Dungeon.quickslot.getItem(s) == null) {
-					Dungeon.quickslot.setSlot(s, waterskin);
-					break;
-				}
-			}
-		}
-
 	}
 
 	public Badges.Badge masteryBadge() {
