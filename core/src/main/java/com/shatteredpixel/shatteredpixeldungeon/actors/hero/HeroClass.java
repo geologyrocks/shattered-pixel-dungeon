@@ -87,7 +87,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
@@ -179,9 +179,9 @@ public enum HeroClass {
 	}
 
 	private static void initWarrior( Hero hero ) {
-		startEasyMode(hero, 3);
+		startEasyMode(hero, 2);
 		
-		Greatsword sword = (Greatsword)getWeapon("greatsword");
+		hero.belongings.weapon = (WarHammer)getWeapon("warhammer");
 
 		ThrowingStone stones = new ThrowingStone();
 		stones.quantity(10).collect();
@@ -209,10 +209,10 @@ public enum HeroClass {
 	}
 
 	private static void initMage( Hero hero ) {
-		startEasyMode(hero, 3);
+		startEasyMode(hero, 1);
 
 		MagesStaff staff = (MagesStaff)getWeapon("magesStaff");
-		(hero.belongings.weapon = staff).identify();
+		hero.belongings.weapon = staff;
 		hero.belongings.weapon.activate(hero);
 		Dungeon.quickslot.setSlot(0, staff);
 
@@ -250,8 +250,8 @@ public enum HeroClass {
 		WandOfWarding wandOfWarding = new WandOfWarding();
 		wandOfWarding.identify().collect();
 		
-		// CorpseDust corpseDust = new CorpseDust();
-		// corpseDust.doPickUp(hero);
+		CorpseDust corpseDust = new CorpseDust();
+		corpseDust.doPickUp(hero);
 
 		AquaBlast aquaBlast = new AquaBlast();
 		aquaBlast.quantity(99999).collect();
@@ -261,17 +261,18 @@ public enum HeroClass {
 	}
 
 	private static void initRogue( Hero hero ) {
-		startEasyMode(hero,3);
+		startEasyMode(hero, 1);
+				
+		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
+		crossbow.doEquip(hero);
 
-		AssassinsBlade assassinsBlade = (AssassinsBlade)getWeapon("assassinsBlade");
-		assassinsBlade.doEquip(hero);
+		Dart darts = new Dart();
+		darts.quantity(99999).collect();
 
 		CloakOfShadows cloak = new CloakOfShadows();
 		(hero.belongings.artifact = cloak).identify();
 		hero.belongings.artifact.activate( hero );
 
-		ThrowingKnife knives = new ThrowingKnife();
-		knives.quantity(10).collect();
 
 		RingOfHaste ringOfHaste = new RingOfHaste();
 		(hero.belongings.ring = ringOfHaste).identify();
@@ -279,14 +280,14 @@ public enum HeroClass {
 		ringOfHaste.upgrade();
 
 		Dungeon.quickslot.setSlot(0, cloak);
-		Dungeon.quickslot.setSlot(1, knives);
+		Dungeon.quickslot.setSlot(1, darts);
 
 		new ScrollOfMagicMapping().identify();
 		new PotionOfInvisibility().identify();
 	}
 
 	private static void initHuntress( Hero hero ) {
-		startEasyMode(hero, 4);
+		startEasyMode(hero, 1);
 
 		(hero.belongings.weapon = new Gloves()).identify();
 		SpiritBow bow = (SpiritBow)getWeapon("spiritBow");
@@ -324,30 +325,40 @@ public enum HeroClass {
 
 		new PotionOfStrength().identify();
 		new ScrollOfMirrorImage().identify();
+	private static void upgradeItem(Item item, int upgradeCount) {
+		for (int i = 0; i < upgradeCount ; i++) {
+			item.upgrade();
+		}
+	}
+
 	private static Weapon getWeapon(String weapon) {
 		if (weapon == "crossbow"){
 			Crossbow crossbow = new Crossbow();
 			crossbow.identify().collect();
+			upgradeItem(crossbow, 10);
 			crossbow.enchant();
 			return crossbow;
 		}
 		else if (weapon == "assassinsBlade"){
 			AssassinsBlade assassinsBlade = new AssassinsBlade();
 			assassinsBlade.identify().collect();
+			upgradeItem(assassinsBlade, 10);
 			assassinsBlade.enchant();
 			return assassinsBlade;
 		}
 		else if (weapon == "magesStaff"){
 			MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
 			staff.identify().collect();
+			upgradeItem(staff, 10);
 			staff.enchant();
 			return staff;
 		}
-		else if (weapon == "greatsword"){
-			Greatsword sword = new Greatsword();
-			sword.identify().collect();
-			sword.enchant();
-			return sword;
+		else if (weapon == "warhammer"){
+			WarHammer hammer = new WarHammer();
+			hammer.identify().collect();
+			upgradeItem(hammer, 10);
+			hammer.enchant();
+			return hammer;
 		}
 		else {
 			SpiritBow bow = new SpiritBow();
