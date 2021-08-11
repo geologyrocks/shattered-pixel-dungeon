@@ -396,52 +396,33 @@ public class Dungeon {
 	}
 
 	public static boolean posNeeded() {
-		if (depth <= 10)
-		{
-			LimitedDrops.STRENGTH_POTIONS.count++;
-			return false;
-		}
 		//2 POS each floor set
-		if (depth > 10) {
-			LimitedDrops.STRENGTH_POTIONS.count++;
-			int posLeftThisSet = 2 - (LimitedDrops.STRENGTH_POTIONS.count - (depth / 5) * 2);
-			if (posLeftThisSet <= 0) return false;
+		int posLeftThisSet = 2 - (LimitedDrops.STRENGTH_POTIONS.count - (depth / 5) * 2);
 
-			int floorThisSet = (depth % 5);
+		int floorThisSet = (depth % 5);
 
-			//pos drops every two floors, (numbers 1-2, and 3-4) with a 50% chance for the earlier one each time.
-			int targetPOSLeft = 2 - floorThisSet/2;
-			if (floorThisSet % 2 == 1 && Random.Int(2) == 0) targetPOSLeft --;
-
-			if (targetPOSLeft < posLeftThisSet) return true;
-			else return false;
-		}
+		//pos drops every two floors, (numbers 1-2, and 3-4) with a 50% chance for the earlier one each time.
+		int targetPOSLeft = 2 - floorThisSet/2;
+		if (floorThisSet % 2 == 1 && Random.Int(2) == 0) targetPOSLeft --;
+		if (depth <= 10) return false;
+		if (targetPOSLeft < posLeftThisSet) return true;
 		else return false;
 	}
 	
 	public static boolean souNeeded() {
-		if (depth <= 10)
-		{
-			LimitedDrops.UPGRADE_SCROLLS.count++;
-			return false;
+		int souLeftThisSet;
+		//3 SOU each floor set, 1.5 (rounded) on forbidden runes challenge
+		if (isChallenged(Challenges.NO_SCROLLS)){
+			souLeftThisSet = Math.round(1.5f - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 1.5f));
+		} else {
+			souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
 		}
-		if (depth > 10) {
-			LimitedDrops.UPGRADE_SCROLLS.count++;
+		if (souLeftThisSet <= 0) return false;
 
-			int souLeftThisSet;
-			//3 SOU each floor set, 1.5 (rounded) on forbidden runes challenge
-			if (isChallenged(Challenges.NO_SCROLLS)){
-				souLeftThisSet = Math.round(1.5f - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 1.5f));
-			} else {
-				souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
-			}
-			if (souLeftThisSet <= 0) return false;
-
-			int floorThisSet = (depth % 5);
-			//chance is floors left / scrolls left
-			return Random.Int(5 - floorThisSet) < souLeftThisSet;
-		}
-		else return false;
+		int floorThisSet = (depth % 5);
+		if(depth <= 10) return false;
+		//chance is floors left / scrolls left
+		return Random.Int(5 - floorThisSet) < souLeftThisSet;
 	}
 	
 	public static boolean asNeeded() {
