@@ -270,15 +270,15 @@ public enum HeroClass {
 
 		(hero.belongings.weapon = new Gloves()).identify();
 		SpiritBow bow = (SpiritBow)getWeapon("spiritBow");
+		Dungeon.quickslot.setSlot(0, bow);
 
 		SandalsOfNature sandals = new SandalsOfNature();
-		(hero.belongings.artifact = sandals).identify();
-		hero.belongings.artifact.activate( hero );
+		sandals.identify();
+		sandals.doEquip(hero);
 
 		RingOfSharpshooting ring = new RingOfSharpshooting();
-		(hero.belongings.ring = ring).identify();
-		ring.upgrade();
-		hero.belongings.ring.activate( hero );
+		ring.identify().upgrade();
+		ring.doEquip(hero);
 
 //		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
 //		crossbow.doEquip(hero);
