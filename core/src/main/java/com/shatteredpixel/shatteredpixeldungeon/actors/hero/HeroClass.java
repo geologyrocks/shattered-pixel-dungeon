@@ -163,30 +163,30 @@ public enum HeroClass {
 	}
 
 	private static void initWarrior( Hero hero ) {
-		startEasyMode(hero, 2);
+		startEasyMode(hero, 0);
 		
-		hero.belongings.weapon = (WarHammer)getWeapon("warhammer");
+		WarHammer hammer = (WarHammer)getWeapon("warhammer");
+		hammer.doEquip(hero);
 
 		ThrowingStone stones = new ThrowingStone();
 		stones.quantity(10).collect();
 		Dungeon.quickslot.setSlot(0, stones);
 		
-		PlateArmor plateArmor = new PlateArmor();
-		plateArmor.identify().collect();
 
 		if (hero.belongings.armor != null){
+			hero.belongings.armor = new PlateArmor();
+			hero.belongings.armor.identify().upgrade();
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 			hero.belongings.armor.inscribe();
 		}
 
 		HornOfPlenty hornOfPlenty = new HornOfPlenty();
-		(hero.belongings.artifact = hornOfPlenty).identify();
-		hero.belongings.artifact.activate( hero );
+		hornOfPlenty.doEquip(hero);
 
 		RingOfMight ringOfMight = new RingOfMight();
-		(hero.belongings.ring = ringOfMight).identify();
-		hero.belongings.ring.activate( hero );
-		ringOfMight.upgrade();
+		ringOfMight.identify();
+		ringOfMight.doEquip(hero);
+		ringOfMight.upgrade(2);
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
@@ -196,8 +196,7 @@ public enum HeroClass {
 		startEasyMode(hero, 1);
 
 		MagesStaff staff = (MagesStaff)getWeapon("magesStaff");
-		hero.belongings.weapon = staff;
-		hero.belongings.weapon.activate(hero);
+		staff.doEquip(hero);
 		Dungeon.quickslot.setSlot(0, staff);
 
 		UnstableSpellbook spellbook = new UnstableSpellbook();
@@ -238,7 +237,7 @@ public enum HeroClass {
 		corpseDust.doPickUp(hero);
 
 		AquaBlast aquaBlast = new AquaBlast();
-		aquaBlast.quantity(99999).collect();
+		aquaBlast.quantity(9999).collect();
 
 		new ScrollOfUpgrade().identify();
 		new PotionOfLiquidFlame().identify();
@@ -251,12 +250,11 @@ public enum HeroClass {
 		crossbow.doEquip(hero);
 
 		Dart darts = new Dart();
-		darts.quantity(99999).collect();
+		darts.quantity(9999).collect();
 
 		CloakOfShadows cloak = new CloakOfShadows();
 		(hero.belongings.artifact = cloak).identify();
 		hero.belongings.artifact.activate( hero );
-
 
 		RingOfHaste ringOfHaste = new RingOfHaste();
 		(hero.belongings.ring = ringOfHaste).identify();
@@ -289,7 +287,7 @@ public enum HeroClass {
 //		crossbow.doEquip(hero);
 
 //		Dart darts = new Dart();
-//		darts.quantity(999999).collect();
+//		darts.quantity(9999).collect();
 //		Dungeon.quickslot.setSlot(1, darts);
 
 		new PotionOfMindVision().identify();
