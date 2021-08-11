@@ -54,6 +54,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -161,17 +163,16 @@ public class WandOfCorruption extends Wand {
 			if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
 				corruptingPower = enemyResist - 0.001f;
 			}
-			corruptEnemy( enemy );
-			// if (corruptingPower > enemyResist){
-			// 	corruptEnemy( enemy );
-			// } else {
-			// 	float debuffChance = corruptingPower / enemyResist;
-			// 	if (Random.Float() < debuffChance){
-			// 		debuffEnemy( enemy, MAJOR_DEBUFFS);
-			// 	} else {
-			// 		debuffEnemy( enemy, MINOR_DEBUFFS);
-			// 	}
-			// }
+			if (Dungeon.hero.heroClass == HeroClass.MAGE || corruptingPower > enemyResist){
+				corruptEnemy( enemy );
+			} else {
+				float debuffChance = corruptingPower / enemyResist;
+				if (Random.Float() < debuffChance){
+					debuffEnemy( enemy, MAJOR_DEBUFFS);
+				} else {
+					debuffEnemy( enemy, MINOR_DEBUFFS);
+				}
+			}
 
 			wandProc(ch, chargesPerCast());
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 0.8f * Random.Float(0.87f, 1.15f) );
