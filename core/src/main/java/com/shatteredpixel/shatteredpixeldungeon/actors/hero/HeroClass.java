@@ -184,9 +184,8 @@ public enum HeroClass {
 		hornOfPlenty.doEquip(hero);
 
 		RingOfMight ringOfMight = new RingOfMight();
-		ringOfMight.identify();
+		ringOfMight.identify().upgrade(2);
 		ringOfMight.doEquip(hero);
-		ringOfMight.upgrade(2);
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
@@ -200,13 +199,12 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(0, staff);
 
 		UnstableSpellbook spellbook = new UnstableSpellbook();
-		(hero.belongings.artifact = spellbook).identify();
-		hero.belongings.artifact.activate( hero );
+		spellbook.identify();
+		spellbook.doEquip(hero);
 
 		RingOfEnergy ringOfEnergy = new RingOfEnergy();
-		(hero.belongings.ring = ringOfEnergy).identify();
-		hero.belongings.ring.activate( hero );
-		ringOfEnergy.upgrade();
+		ringOfEnergy.identify().upgrade();
+		ringOfEnergy.doEquip(hero);
 		
 		WandOfBlastWave wandOfBlastWave = new WandOfBlastWave();
 		wandOfBlastWave.identify().collect();
@@ -253,13 +251,12 @@ public enum HeroClass {
 		darts.quantity(9999).collect();
 
 		CloakOfShadows cloak = new CloakOfShadows();
-		(hero.belongings.artifact = cloak).identify();
-		hero.belongings.artifact.activate( hero );
+		cloak.identify();
+		cloak.doEquip(hero);
 
 		RingOfHaste ringOfHaste = new RingOfHaste();
-		(hero.belongings.ring = ringOfHaste).identify();
-		hero.belongings.ring.activate( hero );
-		ringOfHaste.upgrade();
+		ringOfHaste.identify().upgrade();
+		ringOfHaste.doEquip(hero);
 
 		Dungeon.quickslot.setSlot(0, cloak);
 		Dungeon.quickslot.setSlot(1, darts);
