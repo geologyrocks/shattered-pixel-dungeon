@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -42,11 +43,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -191,13 +194,13 @@ public abstract class Char extends Actor {
 		int curPos = pos;
 
 		//warp instantly with allies in this case
-		if (Dungeon.hero.hasTalent(Talent.ALLY_WARP)){
+		if (c == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ALLY_WARP)){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
 				return true;
 			}
-			ScrollOfTeleportation.appear(this, Dungeon.hero.pos);
-			ScrollOfTeleportation.appear(Dungeon.hero, curPos);
+			ScrollOfTeleportation.appear(this, c.pos);
+			ScrollOfTeleportation.appear(c, curPos);
 			Dungeon.observe();
 			GameScene.updateFog();
 			return true;
@@ -208,14 +211,21 @@ public abstract class Char extends Actor {
 			return true;
 		}
 
-		moveSprite( pos, Dungeon.hero.pos );
-		move( Dungeon.hero.pos );
+		moveSprite( pos, c.pos );
+		move( c.pos );
 		
-		Dungeon.hero.sprite.move( Dungeon.hero.pos, curPos );
-		Dungeon.hero.move( curPos );
+		c.sprite.move( c.pos, curPos );
+		c.move( curPos );
 		
-		Dungeon.hero.spend( 1 / Dungeon.hero.speed() );
-		Dungeon.hero.busy();
+		c.spend( 1 / c.speed() );
+
+		if (c == Dungeon.hero){
+			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
+				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
+			}
+
+			Dungeon.hero.busy();
+		}
 		
 		return true;
 	}
@@ -305,7 +315,7 @@ public abstract class Char extends Actor {
 			
 			if (this instanceof Hero){
 				Hero h = (Hero)this;
-				if (h.belongings.weapon instanceof MissileWeapon
+				if (h.belongings.weapon() instanceof MissileWeapon
 						&& h.subClass == HeroSubClass.SNIPER
 						&& !Dungeon.level.adjacent(h.pos, enemy.pos)){
 					dr = 0;
@@ -324,9 +334,22 @@ public abstract class Char extends Actor {
 			}
 
 			dmg = Math.round(dmg*dmgMulti);
+
+			Berserk berserk = buff(Berserk.class);
+			if (berserk != null) dmg = berserk.damageFactor(dmg);
+
+			if (buff( Fury.class ) != null) {
+				dmg *= 1.5f;
+			}
+
 			dmg += dmgBonus;
 
-			Endure.EndureTracker endure = enemy.buff(Endure.EndureTracker.class);
+			//friendly endure
+			Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
+			if (endure != null) dmg = endure.damageFactor(dmg);
+
+			//enemy endure
+			endure = enemy.buff(Endure.EndureTracker.class);
 			if (endure != null){
 				dmg = endure.adjustDamageTaken(dmg);
 			}
@@ -852,7 +875,7 @@ public abstract class Char extends Actor {
 
 	public enum Property{
 		BOSS ( new HashSet<Class>( Arrays.asList(Grim.class, GrimTrap.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class)),
-				new HashSet<Class>( Arrays.asList(Corruption.class, StoneOfAggression.Aggression.class) )),
+				new HashSet<Class>( Arrays.asList(Corruption.class) )),
 		MINIBOSS ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Corruption.class) )),
 		UNDEAD,

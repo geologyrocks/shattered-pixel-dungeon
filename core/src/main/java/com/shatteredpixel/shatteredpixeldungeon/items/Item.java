@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -87,6 +88,9 @@ public class Item implements Bundlable {
 	// Unique items persist through revival
 	public boolean unique = false;
 
+	// These items are preserved even if the hero's inventory is lost via unblessed ankh
+	public boolean keptThoughLostInvent = false;
+
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
 	
@@ -128,7 +132,9 @@ public class Item implements Bundlable {
 	}
 
 	//resets an item's properties, to ensure consistency between runs
-	public void reset(){}
+	public void reset(){
+		keptThoughLostInvent = false;
+	}
 
 	public void doThrow( Hero hero ) {
 		GameScene.selectCell(thrower);
@@ -183,6 +189,10 @@ public class Item implements Bundlable {
 
 		ArrayList<Item> items = container.items;
 
+		if (items.contains( this )) {
+			return true;
+		}
+
 		for (Item item:items) {
 			if (item instanceof Bag && ((Bag)item).canHold( this )) {
 				if (collect( (Bag)item )){
@@ -192,12 +202,7 @@ public class Item implements Bundlable {
 		}
 
 		if (!container.canHold(this)){
-			GLog.n( Messages.get(Item.class, "pack_full", container.name()) );
 			return false;
-		}
-
-		if (items.contains( this )) {
-			return true;
 		}
 		
 		if (stackable) {
@@ -484,6 +489,7 @@ public class Item implements Bundlable {
 	private static final String CURSED			= "cursed";
 	private static final String CURSED_KNOWN	= "cursedKnown";
 	private static final String QUICKSLOT		= "quickslotpos";
+	private static final String KEPT_LOST       = "kept_lost";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -495,6 +501,7 @@ public class Item implements Bundlable {
 		if (Dungeon.quickslot.contains(this)) {
 			bundle.put( QUICKSLOT, Dungeon.quickslot.getSlot(this) );
 		}
+		bundle.put( KEPT_LOST, keptThoughLostInvent );
 	}
 	
 	@Override
@@ -518,6 +525,8 @@ public class Item implements Bundlable {
 				Dungeon.quickslot.setSlot(bundle.getInt(QUICKSLOT), this);
 			}
 		}
+
+		keptThoughLostInvent = bundle.getBoolean( KEPT_LOST );
 	}
 
 	public int targetingPos( Hero user, int dst ){

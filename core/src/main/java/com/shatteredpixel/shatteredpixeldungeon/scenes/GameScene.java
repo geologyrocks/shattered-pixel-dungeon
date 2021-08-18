@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
@@ -43,16 +45,15 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -92,7 +93,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag.Mode;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoCell;
@@ -102,6 +102,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoPlant;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTrap;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Camera;
@@ -171,6 +172,10 @@ public class GameScene extends PixelScene {
 	private LootIndicator loot;
 	private ActionIndicator action;
 	private ResumeIndicator resume;
+
+	{
+		inGameScene = true;
+	}
 	
 	@Override
 	public void create() {
@@ -180,7 +185,10 @@ public class GameScene extends PixelScene {
 			return;
 		}
 		
-		Music.INSTANCE.play( Assets.Music.GAME, true );
+		Music.INSTANCE.playTracks(
+				new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2},
+				new float[]{1, 1, 0.5f},
+				false);
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
 		
@@ -361,8 +369,10 @@ public class GameScene extends PixelScene {
 		
 		switch (InterlevelScene.mode) {
 			case RESURRECT:
-				ScrollOfTeleportation.appear( Dungeon.hero, Dungeon.level.entrance );
-				new Flare( 8, 32 ).color( 0xFFFF66, true ).show( hero, 2f ) ;
+				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+				ScrollOfTeleportation.appear( Dungeon.hero, Dungeon.hero.pos );
+				SpellSprite.show(Dungeon.hero, SpellSprite.ANKH);
+				new Flare( 5, 16 ).color( 0xFFFF00, true ).show( hero, 4f ) ;
 				break;
 			case RETURN:
 				ScrollOfTeleportation.appear(  Dungeon.hero, Dungeon.hero.pos );
@@ -473,6 +483,8 @@ public class GameScene extends PixelScene {
 				
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESET) {
 				GLog.h(Messages.get(this, "warp"));
+			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESURRECT) {
+				GLog.h(Messages.get(this, "resurrect"), Dungeon.depth);
 			} else {
 				GLog.h(Messages.get(this, "return"), Dungeon.depth);
 			}
@@ -526,8 +538,27 @@ public class GameScene extends PixelScene {
 
 			
 		}
+
+		if (Rankings.INSTANCE.totalNumber > 0 && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_DIEING)){
+			GLog.p(Messages.get(Guidebook.class, "hint"));
+			GameScene.flashForDocument(Document.GUIDE_DIEING);
+		}
 		
 		fadeIn();
+
+		//re-show WndResurrect if needed
+		if (!Dungeon.hero.isAlive()){
+			//check if hero has an unblessed ankh
+			boolean hasAnkh = false;
+			for (Ankh i : Dungeon.hero.belongings.getAllItems(Ankh.class)){
+				if (!i.isBlessed()){
+					hasAnkh = true;
+				}
+			}
+			if (hasAnkh) {
+				add(new WndResurrect());
+			}
+		}
 
 	}
 	
@@ -905,9 +936,10 @@ public class GameScene extends PixelScene {
 	public static void pickUpJournal( Item item, int pos ) {
 		if (scene != null) scene.pane.pickup( item, pos );
 	}
-	
-	public static void flashJournal(){
-		if (scene != null) scene.pane.flash();
+
+	//TODO currently only works with guidebooks
+	public static void flashForDocument( String page ){
+		if (scene != null) scene.pane.flashForPage( page );
 	}
 	
 	public static void updateKeyDisplay(){
@@ -1053,20 +1085,11 @@ public class GameScene extends PixelScene {
 		}
 	}
 	
-	public static WndBag selectItem( WndBag.Listener listener, WndBag.Mode mode, String title ) {
+	public static WndBag selectItem( WndBag.ItemSelector listener ) {
 		cancelCellSelector();
-		
-		WndBag wnd =
-				mode == Mode.SEED ?
-					WndBag.getBag( VelvetPouch.class, listener, mode, title ) :
-				mode == Mode.SCROLL ?
-					WndBag.getBag( ScrollHolder.class, listener, mode, title ) :
-				mode == Mode.POTION ?
-					WndBag.getBag( PotionBandolier.class, listener, mode, title ) :
-				mode == Mode.WAND ?
-					WndBag.getBag( MagicalHolster.class, listener, mode, title ) :
-				WndBag.lastBag( listener, mode, title );
-		
+
+		WndBag wnd = WndBag.getBag( listener );
+
 		if (scene != null) scene.addToFront( wnd );
 		
 		return wnd;
@@ -1165,6 +1188,10 @@ public class GameScene extends PixelScene {
 			GameScene.show( new WndHero() );
 		} else if ( o instanceof Mob ){
 			GameScene.show(new WndInfoMob((Mob) o));
+			if (o instanceof Snake && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_SURPRISE_ATKS)){
+				GLog.p(Messages.get(Guidebook.class, "hint"));
+				GameScene.flashForDocument(Document.GUIDE_SURPRISE_ATKS);
+			}
 		} else if ( o instanceof Heap ){
 			GameScene.show(new WndInfoItem((Heap)o));
 		} else if ( o instanceof Plant ){
