@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -57,7 +58,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -108,7 +108,11 @@ public enum HeroClass {
 		Talent.initClassTalents(hero);
 
 		Item i = new ClothArmor().identify();
-		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
+		if (!Challenges.isItemBlocked(i))
+		{
+			hero.belongings.armor = (ClothArmor)i;
+			hero.belongings.armor.inscribe(Armor.Glyph.randomCommon());
+		}
 
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
@@ -155,21 +159,18 @@ public enum HeroClass {
 	}
 
 	private static void initWarrior( Hero hero ) {
-		startEasyMode(hero, 0);
-		
 		WarHammer hammer = (WarHammer)getWeapon("warhammer");
 		hammer.doEquip(hero);
 
 		ThrowingStone stones = new ThrowingStone();
 		stones.quantity(10).collect();
-		Dungeon.quickslot.setSlot(0, stones);
 		
 
 		if (hero.belongings.armor != null){
 			hero.belongings.armor = new PlateArmor();
 			hero.belongings.armor.identify().upgrade();
 			hero.belongings.armor.affixSeal(new BrokenSeal());
-			hero.belongings.armor.inscribe();
+			hero.belongings.armor.inscribe(Armor.Glyph.randomUncommon());
 		}
 
 		HornOfPlenty hornOfPlenty = new HornOfPlenty();
@@ -178,17 +179,18 @@ public enum HeroClass {
 		RingOfMight ringOfMight = new RingOfMight();
 		ringOfMight.identify().upgrade(2);
 		ringOfMight.doEquip(hero);
+		
+		setQuickslot(stones);
+		setQuickslot(hornOfPlenty);
+		startEasyMode(hero, 0);
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
 	}
 
 	private static void initMage( Hero hero ) {
-		startEasyMode(hero, 1);
-
 		MagesStaff staff = (MagesStaff)getWeapon("magesStaff");
 		staff.doEquip(hero);
-		Dungeon.quickslot.setSlot(0, staff);
 
 		UnstableSpellbook spellbook = new UnstableSpellbook();
 		spellbook.identify();
@@ -229,13 +231,15 @@ public enum HeroClass {
 		AquaBlast aquaBlast = new AquaBlast();
 		aquaBlast.quantity(9999).collect();
 
+		setQuickslot(staff);
+		setQuickslot(spellbook);
+		startEasyMode(hero, 1);
+
 		new ScrollOfUpgrade().identify();
 		new PotionOfLiquidFlame().identify();
 	}
 
 	private static void initRogue( Hero hero ) {
-		startEasyMode(hero, 1);
-				
 		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
 		crossbow.doEquip(hero);
 
@@ -250,19 +254,18 @@ public enum HeroClass {
 		ringOfHaste.identify().upgrade();
 		ringOfHaste.doEquip(hero);
 
-		Dungeon.quickslot.setSlot(0, cloak);
-		Dungeon.quickslot.setSlot(1, darts);
+		setQuickslot(cloak);
+		setQuickslot(darts);
+		
+		startEasyMode(hero, 1);
 
 		new ScrollOfMagicMapping().identify();
 		new PotionOfInvisibility().identify();
 	}
 
 	private static void initHuntress( Hero hero ) {
-		startEasyMode(hero, 1);
-
 		(hero.belongings.weapon = new Gloves()).identify();
 		SpiritBow bow = (SpiritBow)getWeapon("spiritBow");
-		Dungeon.quickslot.setSlot(0, bow);
 
 		SandalsOfNature sandals = new SandalsOfNature();
 		sandals.identify();
@@ -277,7 +280,11 @@ public enum HeroClass {
 
 //		Dart darts = new Dart();
 //		darts.quantity(9999).collect();
-//		Dungeon.quickslot.setSlot(1, darts);
+
+		setQuickslot(bow);
+//		setQuickslot(darts);
+
+		startEasyMode(hero, 1);
 
 		new PotionOfMindVision().identify();
 		new ScrollOfLullaby().identify();
@@ -288,34 +295,34 @@ public enum HeroClass {
 			Crossbow crossbow = new Crossbow();
 			crossbow.identify().collect();
 			crossbow.upgrade(10);
-			crossbow.enchant();
+			crossbow.enchant(Weapon.Enchantment.randomRare());
 			return crossbow;
 		}
 		else if (weapon == "assassinsBlade"){
 			AssassinsBlade assassinsBlade = new AssassinsBlade();
 			assassinsBlade.identify().collect();
 			assassinsBlade.upgrade(10);
-			assassinsBlade.enchant();
+			assassinsBlade.enchant(Weapon.Enchantment.randomRare());
 			return assassinsBlade;
 		}
 		else if (weapon == "magesStaff"){
 			MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
 			staff.identify().collect();
 			staff.upgrade(10);
-			staff.enchant();
+			staff.enchant(Weapon.Enchantment.randomRare());
 			return staff;
 		}
 		else if (weapon == "warhammer"){
 			WarHammer hammer = new WarHammer();
 			hammer.identify().collect();
 			hammer.upgrade(10);
-			hammer.enchant();
+			hammer.enchant(Weapon.Enchantment.randomRare());
 			return hammer;
 		}
 		else {
 			SpiritBow bow = new SpiritBow();
 			bow.identify().collect();
-			bow.enchant();
+			bow.enchant(Weapon.Enchantment.randomRare());
 			return bow;
 		}
 	}
@@ -330,22 +337,26 @@ public enum HeroClass {
 		new MagicalHolster().collect();
 		Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
 
-		ScrollOfUpgrade upgradeScroll = new ScrollOfUpgrade();
-		upgradeScroll.quantity(souCount).collect();
-		upgradeScroll.identify();
-		Dungeon.quickslot.setSlot(3, upgradeScroll);
-
-		PotionOfStrength potionOfStrength = new PotionOfStrength();
-		potionOfStrength.quantity(4).collect();
-		potionOfStrength.identify();
-		Dungeon.quickslot.setSlot(2, potionOfStrength);
+		ScrollOfUpgrade sou = new ScrollOfUpgrade();
+		sou.quantity(souCount).collect();
+		sou.identify();
+		if(souCount > 0) setQuickslot(sou);
 
 		FeatherFall featherFall = new FeatherFall();
 		featherFall.quantity(4).collect();
 
 		ScrollOfEnchantment soe = new ScrollOfEnchantment();
 		soe.quantity(10).collect();
-		Dungeon.quickslot.setSlot(1, upgradeScroll);
+		setQuickslot(soe);
+	}
+
+	private static void setQuickslot(Item item){
+		for (int s = 0; s < QuickSlot.SIZE; s++){
+			if (Dungeon.quickslot.getItem(s) == null){
+				Dungeon.quickslot.setSlot(s, item);
+				break;
+			}
+		}
 	}
 
 	public String title() {
@@ -464,5 +475,4 @@ public enum HeroClass {
 				return Messages.get(HeroClass.class, "huntress_unlock");
 		}
 	}
-
 }
