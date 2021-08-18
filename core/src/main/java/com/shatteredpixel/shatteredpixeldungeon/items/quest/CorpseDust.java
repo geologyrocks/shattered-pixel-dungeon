@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
@@ -47,11 +48,6 @@ public class CorpseDust extends Item {
 		cursedKnown = true;
 		
 		unique = true;
-	}
-
-	@Override
-	public ArrayList<String> actions(Hero hero) {
-		return new ArrayList<>(); //yup, no dropping this one
 	}
 
 	@Override
@@ -107,7 +103,8 @@ public class CorpseDust extends Item {
 					tries --;
 				} while (tries > 0 && (!Dungeon.level.heroFOV[pos] || Dungeon.level.solid[pos] || Actor.findChar( pos ) != null));
 				if (tries > 0) {
-					Wraith.spawnAt(pos);
+					Wraith wraith = Wraith.spawnAt(pos);
+					Buff.affect(wraith, Corruption.class);
 					Sample.INSTANCE.play(Assets.Sounds.CURSED);
 				}
 			}

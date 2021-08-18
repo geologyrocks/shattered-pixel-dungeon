@@ -54,6 +54,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -161,8 +163,7 @@ public class WandOfCorruption extends Wand {
 			if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
 				corruptingPower = enemyResist - 0.001f;
 			}
-			
-			if (corruptingPower > enemyResist){
+			if (Dungeon.hero.heroClass == HeroClass.MAGE || corruptingPower > enemyResist){
 				corruptEnemy( enemy );
 			} else {
 				float debuffChance = corruptingPower / enemyResist;

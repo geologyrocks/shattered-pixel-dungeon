@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -57,7 +58,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -81,7 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -108,7 +108,11 @@ public enum HeroClass {
 		Talent.initClassTalents(hero);
 
 		Item i = new ClothArmor().identify();
-		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
+		if (!Challenges.isItemBlocked(i))
+		{
+			hero.belongings.armor = (ClothArmor)i;
+			hero.belongings.armor.inscribe(Armor.Glyph.randomCommon());
+		}
 
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
@@ -138,14 +142,6 @@ public enum HeroClass {
 				initHuntress( hero );
 				break;
 		}
-
-		for (int s = 0; s < QuickSlot.SIZE; s++){
-			if (Dungeon.quickslot.getItem(s) == null){
-				Dungeon.quickslot.setSlot(s, waterskin);
-				break;
-			}
-		}
-
 	}
 
 	public Badges.Badge masteryBadge() {
@@ -163,51 +159,46 @@ public enum HeroClass {
 	}
 
 	private static void initWarrior( Hero hero ) {
-		startEasyMode(hero, 3);
-		
-		Greatsword sword = (Greatsword)getWeapon("greatsword");
+		WarHammer hammer = (WarHammer)getWeapon("warhammer");
+		hammer.doEquip(hero);
 
 		ThrowingStone stones = new ThrowingStone();
 		stones.quantity(10).collect();
-		Dungeon.quickslot.setSlot(0, stones);
 		
-		PlateArmor plateArmor = new PlateArmor();
-		plateArmor.identify().collect();
 
 		if (hero.belongings.armor != null){
+			hero.belongings.armor = new PlateArmor();
+			hero.belongings.armor.identify().upgrade();
 			hero.belongings.armor.affixSeal(new BrokenSeal());
-			hero.belongings.armor.inscribe();
+			hero.belongings.armor.inscribe(Armor.Glyph.randomUncommon());
 		}
 
 		HornOfPlenty hornOfPlenty = new HornOfPlenty();
-		(hero.belongings.artifact = hornOfPlenty).identify();
-		hero.belongings.artifact.activate( hero );
+		hornOfPlenty.doEquip(hero);
 
 		RingOfMight ringOfMight = new RingOfMight();
-		(hero.belongings.ring = ringOfMight).identify();
-		hero.belongings.ring.activate( hero );
-		ringOfMight.upgrade();
+		ringOfMight.identify().upgrade(2);
+		ringOfMight.doEquip(hero);
+		
+		setQuickslot(stones);
+		setQuickslot(hornOfPlenty);
+		startEasyMode(hero, 0);
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
 	}
 
 	private static void initMage( Hero hero ) {
-		startEasyMode(hero, 3);
-
 		MagesStaff staff = (MagesStaff)getWeapon("magesStaff");
-		(hero.belongings.weapon = staff).identify();
-		hero.belongings.weapon.activate(hero);
-		Dungeon.quickslot.setSlot(0, staff);
+		staff.doEquip(hero);
 
 		UnstableSpellbook spellbook = new UnstableSpellbook();
-		(hero.belongings.artifact = spellbook).identify();
-		hero.belongings.artifact.activate( hero );
+		spellbook.identify();
+		spellbook.doEquip(hero);
 
 		RingOfEnergy ringOfEnergy = new RingOfEnergy();
-		(hero.belongings.ring = ringOfEnergy).identify();
-		hero.belongings.ring.activate( hero );
-		ringOfEnergy.upgrade();
+		ringOfEnergy.identify().upgrade();
+		ringOfEnergy.doEquip(hero);
 		
 		WandOfBlastWave wandOfBlastWave = new WandOfBlastWave();
 		wandOfBlastWave.identify().collect();
@@ -234,62 +225,66 @@ public enum HeroClass {
 		WandOfWarding wandOfWarding = new WandOfWarding();
 		wandOfWarding.identify().collect();
 		
-		// CorpseDust corpseDust = new CorpseDust();
-		// corpseDust.doPickUp(hero);
+		CorpseDust corpseDust = new CorpseDust();
+		corpseDust.doPickUp(hero);
 
 		AquaBlast aquaBlast = new AquaBlast();
-		aquaBlast.quantity(99999).collect();
+		aquaBlast.quantity(9999).collect();
+
+		setQuickslot(staff);
+		setQuickslot(spellbook);
+		startEasyMode(hero, 1);
 
 		new ScrollOfUpgrade().identify();
 		new PotionOfLiquidFlame().identify();
 	}
 
 	private static void initRogue( Hero hero ) {
-		startEasyMode(hero,3);
+		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
+		crossbow.doEquip(hero);
 
-		AssassinsBlade assassinsBlade = (AssassinsBlade)getWeapon("assassinsBlade");
-		assassinsBlade.doEquip(hero);
+		Dart darts = new Dart();
+		darts.quantity(9999).collect();
 
 		CloakOfShadows cloak = new CloakOfShadows();
-		(hero.belongings.artifact = cloak).identify();
-		hero.belongings.artifact.activate( hero );
-
-		ThrowingKnife knives = new ThrowingKnife();
-		knives.quantity(10).collect();
+		cloak.identify();
+		cloak.doEquip(hero);
 
 		RingOfHaste ringOfHaste = new RingOfHaste();
-		(hero.belongings.ring = ringOfHaste).identify();
-		hero.belongings.ring.activate( hero );
-		ringOfHaste.upgrade();
+		ringOfHaste.identify().upgrade();
+		ringOfHaste.doEquip(hero);
 
-		Dungeon.quickslot.setSlot(0, cloak);
-		Dungeon.quickslot.setSlot(1, knives);
+		setQuickslot(cloak);
+		setQuickslot(darts);
+		
+		startEasyMode(hero, 1);
 
 		new ScrollOfMagicMapping().identify();
 		new PotionOfInvisibility().identify();
 	}
 
 	private static void initHuntress( Hero hero ) {
-		startEasyMode(hero, 4);
-
 		(hero.belongings.weapon = new Gloves()).identify();
 		SpiritBow bow = (SpiritBow)getWeapon("spiritBow");
 
 		SandalsOfNature sandals = new SandalsOfNature();
-		(hero.belongings.artifact = sandals).identify();
-		hero.belongings.artifact.activate( hero );
+		sandals.identify();
+		sandals.doEquip(hero);
 
 		RingOfSharpshooting ring = new RingOfSharpshooting();
-		(hero.belongings.ring = ring).identify();
-		ring.upgrade();
-		hero.belongings.ring.activate( hero );
+		ring.identify().upgrade();
+		ring.doEquip(hero);
 
 //		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
 //		crossbow.doEquip(hero);
 
 //		Dart darts = new Dart();
-//		darts.quantity(999999).collect();
-//		Dungeon.quickslot.setSlot(1, darts);
+//		darts.quantity(9999).collect();
+
+		setQuickslot(bow);
+//		setQuickslot(darts);
+
+		startEasyMode(hero, 1);
 
 		new PotionOfMindVision().identify();
 		new ScrollOfLullaby().identify();
@@ -299,31 +294,35 @@ public enum HeroClass {
 		if (weapon == "crossbow"){
 			Crossbow crossbow = new Crossbow();
 			crossbow.identify().collect();
-			crossbow.enchant();
+			crossbow.upgrade(10);
+			crossbow.enchant(Weapon.Enchantment.randomRare());
 			return crossbow;
 		}
 		else if (weapon == "assassinsBlade"){
 			AssassinsBlade assassinsBlade = new AssassinsBlade();
 			assassinsBlade.identify().collect();
-			assassinsBlade.enchant();
+			assassinsBlade.upgrade(10);
+			assassinsBlade.enchant(Weapon.Enchantment.randomRare());
 			return assassinsBlade;
 		}
 		else if (weapon == "magesStaff"){
 			MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
 			staff.identify().collect();
-			staff.enchant();
+			staff.upgrade(10);
+			staff.enchant(Weapon.Enchantment.randomRare());
 			return staff;
 		}
-		else if (weapon == "greatsword"){
-			Greatsword sword = new Greatsword();
-			sword.identify().collect();
-			sword.enchant();
-			return sword;
+		else if (weapon == "warhammer"){
+			WarHammer hammer = new WarHammer();
+			hammer.identify().collect();
+			hammer.upgrade(10);
+			hammer.enchant(Weapon.Enchantment.randomRare());
+			return hammer;
 		}
 		else {
 			SpiritBow bow = new SpiritBow();
 			bow.identify().collect();
-			bow.enchant();
+			bow.enchant(Weapon.Enchantment.randomRare());
 			return bow;
 		}
 	}
@@ -338,22 +337,26 @@ public enum HeroClass {
 		new MagicalHolster().collect();
 		Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
 
-		ScrollOfUpgrade upgradeScroll = new ScrollOfUpgrade();
-		upgradeScroll.quantity(souCount).collect();
-		upgradeScroll.identify();
-		Dungeon.quickslot.setSlot(3, upgradeScroll);
-
-		PotionOfStrength potionOfStrength = new PotionOfStrength();
-		potionOfStrength.quantity(4).collect();
-		potionOfStrength.identify();
-		Dungeon.quickslot.setSlot(2, potionOfStrength);
+		ScrollOfUpgrade sou = new ScrollOfUpgrade();
+		sou.quantity(souCount).collect();
+		sou.identify();
+		if(souCount > 0) setQuickslot(sou);
 
 		FeatherFall featherFall = new FeatherFall();
 		featherFall.quantity(4).collect();
 
 		ScrollOfEnchantment soe = new ScrollOfEnchantment();
 		soe.quantity(10).collect();
-		Dungeon.quickslot.setSlot(1, upgradeScroll);
+		setQuickslot(soe);
+	}
+
+	private static void setQuickslot(Item item){
+		for (int s = 0; s < QuickSlot.SIZE; s++){
+			if (Dungeon.quickslot.getItem(s) == null){
+				Dungeon.quickslot.setSlot(s, item);
+				break;
+			}
+		}
 	}
 
 	public String title() {
@@ -472,5 +475,4 @@ public enum HeroClass {
 				return Messages.get(HeroClass.class, "huntress_unlock");
 		}
 	}
-
 }
