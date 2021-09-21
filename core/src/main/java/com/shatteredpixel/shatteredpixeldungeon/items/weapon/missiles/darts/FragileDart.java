@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -44,7 +45,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Dart extends MissileWeapon {
+public class FragileDart extends MissileWeapon {
 
 	{
 		image = ItemSpriteSheet.DART;
@@ -53,25 +54,8 @@ public class Dart extends MissileWeapon {
 		
 		tier = 1;
 		
-		// infinite, even with penalties
-		baseUses = 1000;
-	}
-	
-	protected static final String AC_TIP = "TIP";
-	
-	@Override
-	public ArrayList<String> actions(Hero hero) {
-		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_TIP );
-		return actions;
-	}
-	
-	@Override
-	public void execute(Hero hero, String action) {
-		super.execute(hero, action);
-		if (action.equals(AC_TIP)){
-			GameScene.selectItem(itemSelector);
-		}
+		// single-shot for ease
+		baseUses = 1;
 	}
 	
 	@Override
@@ -168,106 +152,4 @@ public class Dart extends MissileWeapon {
 	public int value() {
 		return super.value()/2; //half normal value
 	}
-	
-	private final WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
-
-		@Override
-		public String textPrompt() {
-			return Messages.get(Dart.class, "prompt");
-		}
-
-		@Override
-		public Class<?extends Bag> preferredBag(){
-			return VelvetPouch.class;
-		}
-
-		@Override
-		public boolean itemSelectable(Item item) {
-			return item instanceof Plant.Seed;
-		}
-
-		@Override
-		public void onSelect(final Item item) {
-			
-			if (item == null) return;
-			
-			final int maxToTip = Math.min(curItem.quantity(), item.quantity()*2);
-			final int maxSeedsToUse = (maxToTip+1)/2;
-			
-			final int singleSeedDarts;
-			
-			final String[] options;
-			
-			if (curItem.quantity() == 1){
-				singleSeedDarts = 1;
-				options = new String[]{
-						Messages.get(Dart.class, "tip_one"),
-						Messages.get(Dart.class, "tip_cancel")};
-			} else {
-				singleSeedDarts = 2;
-				if (maxToTip <= 2){
-					options = new String[]{
-							Messages.get(Dart.class, "tip_two"),
-							Messages.get(Dart.class, "tip_cancel")};
-				} else {
-					options = new String[]{
-							Messages.get(Dart.class, "tip_all", maxToTip, maxSeedsToUse),
-							Messages.get(Dart.class, "tip_two"),
-							Messages.get(Dart.class, "tip_cancel")};
-				}
-			}
-			
-			TippedDart tipResult = TippedDart.getTipped((Plant.Seed) item, 1);
-			
-			GameScene.show(new WndOptions( new ItemSprite(item),
-					Messages.titleCase(item.name()),
-					Messages.get(Dart.class, "tip_desc", tipResult.name()) + "\n\n" + tipResult.desc(),
-					options){
-				
-				@Override
-				protected void onSelect(int index) {
-					super.onSelect(index);
-					
-					if (index == 0 && options.length == 3){
-						if (item.quantity() <= maxSeedsToUse){
-							item.detachAll( curUser.belongings.backpack );
-						} else {
-							item.quantity(item.quantity() - maxSeedsToUse);
-						}
-						
-						if (maxToTip < curItem.quantity()){
-							curItem.quantity(curItem.quantity() - maxToTip);
-						} else {
-							curItem.detachAll(curUser.belongings.backpack);
-						}
-						
-						TippedDart newDart = TippedDart.getTipped((Plant.Seed) item, maxToTip);
-						if (!newDart.collect()) Dungeon.level.drop(newDart, curUser.pos).sprite.drop();
-						
-						curUser.spend( 1f );
-						curUser.busy();
-						curUser.sprite.operate(curUser.pos);
-						
-					} else if ((index == 1 && options.length == 3) || (index == 0 && options.length == 2)){
-						item.detach( curUser.belongings.backpack );
-						
-						if (curItem.quantity() <= singleSeedDarts){
-							curItem.detachAll( curUser.belongings.backpack );
-						} else {
-							curItem.quantity(curItem.quantity() - singleSeedDarts);
-						}
-						
-						TippedDart newDart = TippedDart.getTipped((Plant.Seed) item, singleSeedDarts);
-						if (!newDart.collect()) Dungeon.level.drop(newDart, curUser.pos).sprite.drop();
-						
-						curUser.spend( 1f );
-						curUser.busy();
-						curUser.sprite.operate(curUser.pos);
-					}
-				}
-			});
-			
-		}
-		
-	};
 }
