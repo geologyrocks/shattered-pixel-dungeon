@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.FragileDart;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.tweeners.PosTweener;
@@ -89,6 +90,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	
 	private static final HashMap<Class<?extends Item>, Integer> ANGULAR_SPEEDS = new HashMap<>();
 	static {
+<<<<<<< HEAD
 		ANGULAR_SPEEDS.put(Dart.class,          0);
 		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
 		ANGULAR_SPEEDS.put(ThrowingSpike.class, 0);
@@ -97,6 +99,16 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Kunai.class,         0);
 		ANGULAR_SPEEDS.put(Javelin.class,       0);
 		ANGULAR_SPEEDS.put(Trident.class,       0);
+=======
+		ANGULAR_SPEEDS.put(Dart.class,			0);
+		ANGULAR_SPEEDS.put(FragileDart.class,	0);
+		ANGULAR_SPEEDS.put(ThrowingKnife.class,	0);
+		ANGULAR_SPEEDS.put(FishingSpear.class,	0);
+		ANGULAR_SPEEDS.put(ThrowingSpear.class,	0);
+		ANGULAR_SPEEDS.put(Kunai.class,			0);
+		ANGULAR_SPEEDS.put(Javelin.class,		0);
+		ANGULAR_SPEEDS.put(Trident.class,		0);
+>>>>>>> new dart type
 		
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
@@ -151,7 +163,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		}
 		
 		float speed = SPEED;
-		if (item instanceof Dart
+		if ((item instanceof Dart || item instanceof FragileDart) 
 				&& (Dungeon.hero.belongings.weapon() instanceof Crossbow
 				|| Dungeon.hero.belongings.secondWep() instanceof Crossbow)){
 			speed *= 3f;

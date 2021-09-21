@@ -89,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlad
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.FragileDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -214,33 +215,33 @@ public enum HeroClass {
 		ringOfEnergy.identify().upgrade();
 		ringOfEnergy.doEquip(hero);
 		
-		WandOfBlastWave wandOfBlastWave = new WandOfBlastWave();
-		wandOfBlastWave.identify().collect();
-		WandOfCorrosion wandOfCorrosion = new WandOfCorrosion();
-		wandOfCorrosion.identify().collect();
-		WandOfCorruption wandOfCorruption = new WandOfCorruption();
-		wandOfCorruption.identify().collect();
-		WandOfDisintegration wandOfDisintegration = new WandOfDisintegration();
-		wandOfDisintegration.identify().collect();
-		WandOfFireblast wandOfFireblast = new WandOfFireblast();
-		wandOfFireblast.identify().collect();
-		WandOfFrost wandOfFrost = new WandOfFrost();
-		wandOfFrost.identify().collect();
-		WandOfLightning wandOfLightning = new WandOfLightning();
-		wandOfLightning.identify().collect();
-		WandOfLivingEarth wandOfLivingEarth = new WandOfLivingEarth();
-		wandOfLivingEarth.identify().collect();
-		WandOfPrismaticLight wandOfPrismaticLight = new WandOfPrismaticLight();
-		wandOfPrismaticLight.identify().collect();
-		WandOfRegrowth wandOfRegrowth = new WandOfRegrowth();
-		wandOfRegrowth.identify().collect();
-		WandOfTransfusion wandOfTransfusion = new WandOfTransfusion();
-		wandOfTransfusion.identify().collect();
-		WandOfWarding wandOfWarding = new WandOfWarding();
-		wandOfWarding.identify().collect();
+		// WandOfBlastWave wandOfBlastWave = new WandOfBlastWave();
+		// wandOfBlastWave.identify().collect();
+		// WandOfCorrosion wandOfCorrosion = new WandOfCorrosion();
+		// wandOfCorrosion.identify().collect();
+		// WandOfCorruption wandOfCorruption = new WandOfCorruption();
+		// wandOfCorruption.identify().collect();
+		// WandOfDisintegration wandOfDisintegration = new WandOfDisintegration();
+		// wandOfDisintegration.identify().collect();
+		// WandOfFireblast wandOfFireblast = new WandOfFireblast();
+		// wandOfFireblast.identify().collect();
+		// WandOfFrost wandOfFrost = new WandOfFrost();
+		// wandOfFrost.identify().collect();
+		// WandOfLightning wandOfLightning = new WandOfLightning();
+		// wandOfLightning.identify().collect();
+		// WandOfLivingEarth wandOfLivingEarth = new WandOfLivingEarth();
+		// wandOfLivingEarth.identify().collect();
+		// WandOfPrismaticLight wandOfPrismaticLight = new WandOfPrismaticLight();
+		// wandOfPrismaticLight.identify().collect();
+		// WandOfRegrowth wandOfRegrowth = new WandOfRegrowth();
+		// wandOfRegrowth.identify().collect();
+		// WandOfTransfusion wandOfTransfusion = new WandOfTransfusion();
+		// wandOfTransfusion.identify().collect();
+		// WandOfWarding wandOfWarding = new WandOfWarding();
+		// wandOfWarding.identify().collect();
 		
-		CorpseDust corpseDust = new CorpseDust();
-		corpseDust.doPickUp(hero);
+		// CorpseDust corpseDust = new CorpseDust();
+		// corpseDust.doPickUp(hero);
 
 		AquaBlast aquaBlast = new AquaBlast();
 		aquaBlast.quantity(9999).collect();
@@ -257,7 +258,7 @@ public enum HeroClass {
 		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
 		crossbow.doEquip(hero);
 
-		Dart darts = new Dart();
+		FragileDart darts = new FragileDart();
 		darts.quantity(9999).collect();
 
 		CloakOfShadows cloak = new CloakOfShadows();
@@ -292,7 +293,7 @@ public enum HeroClass {
 //		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
 //		crossbow.doEquip(hero);
 
-//		Dart darts = new Dart();
+//		FragileDart darts = new FragileDart();
 //		darts.quantity(9999).collect();
 
 		setQuickslot(bow);
@@ -308,35 +309,35 @@ public enum HeroClass {
 		if (weapon == "crossbow"){
 			Crossbow crossbow = new Crossbow();
 			crossbow.identify().collect();
-			crossbow.upgrade(10);
-			crossbow.enchant(Weapon.Enchantment.randomRare());
+			crossbow.upgrade(3);
+			// crossbow.enchant(Weapon.Enchantment.randomRare());
 			return crossbow;
 		}
 		else if (weapon == "assassinsBlade"){
 			AssassinsBlade assassinsBlade = new AssassinsBlade();
 			assassinsBlade.identify().collect();
-			assassinsBlade.upgrade(10);
-			assassinsBlade.enchant(Weapon.Enchantment.randomRare());
+			assassinsBlade.upgrade(3);
+			// assassinsBlade.enchant(Weapon.Enchantment.randomRare());
 			return assassinsBlade;
 		}
 		else if (weapon == "magesStaff"){
 			MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
 			staff.identify().collect();
-			staff.upgrade(10);
-			staff.enchant(Weapon.Enchantment.randomRare());
+			staff.upgrade(2);
+			// staff.enchant(Weapon.Enchantment.randomRare());
 			return staff;
 		}
 		else if (weapon == "warhammer"){
 			WarHammer hammer = new WarHammer();
 			hammer.identify().collect();
-			hammer.upgrade(10);
-			hammer.enchant(Weapon.Enchantment.randomRare());
+			hammer.upgrade(3);
+			// hammer.enchant(Weapon.Enchantment.randomRare());
 			return hammer;
 		}
 		else {
 			SpiritBow bow = new SpiritBow();
 			bow.identify().collect();
-			bow.enchant(Weapon.Enchantment.randomRare());
+			// bow.enchant(Weapon.Enchantment.randomRare());
 			return bow;
 		}
 	}
@@ -359,9 +360,9 @@ public enum HeroClass {
 		FeatherFall featherFall = new FeatherFall();
 		featherFall.quantity(4).collect();
 
-		ScrollOfEnchantment soe = new ScrollOfEnchantment();
-		soe.quantity(10).collect();
-		setQuickslot(soe);
+		// ScrollOfEnchantment soe = new ScrollOfEnchantment();
+		// soe.quantity(10).collect();
+		// setQuickslot(soe);
 	}
 
 	private static void setQuickslot(Item item){

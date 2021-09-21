@@ -54,13 +54,9 @@ public class Dart extends MissileWeapon {
 		hitSoundPitch = 1.3f;
 		
 		tier = 1;
-		if (Dungeon.hero.heroClass == HeroClass.ROGUE || Dungeon.hero.heroClass == HeroClass.HUNTRESS){
-			// single-use for ease
-			baseUses = 1;
-		} else{
-			//infinite, even with penalties
-			baseUses = 1000;
-		}
+		
+		// infinite, even with penalties
+		baseUses = 1000;
 	}
 	
 	protected static final String AC_TIP = "TIP";
