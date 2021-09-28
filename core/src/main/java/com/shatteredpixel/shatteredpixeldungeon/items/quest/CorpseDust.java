@@ -116,7 +116,8 @@ public class CorpseDust extends Item {
 				} while (tries > 0 && (!Dungeon.level.heroFOV[pos] || Dungeon.level.solid[pos] || Actor.findChar( pos ) != null));
 				if (tries > 0) {
 					Wraith wraith = Wraith.spawnAt(pos);
-					Buff.affect(wraith, Corruption.class);
+					// This makes them auto-corrupt on spawn
+					// Buff.affect(wraith, Corruption.class);
 					Sample.INSTANCE.play(Assets.Sounds.CURSED);
 				}
 			}

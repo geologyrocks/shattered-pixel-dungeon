@@ -172,7 +172,9 @@ public class WandOfCorruption extends Wand {
 			if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
 				corruptingPower = enemyResist - 0.001f;
 			}
-			if (Dungeon.hero.heroClass == HeroClass.MAGE || corruptingPower > enemyResist){
+			if (corruptingPower > enemyResist){
+			// This will let the mage one-shot corrupt
+			// if (Dungeon.hero.heroClass == HeroClass.MAGE || corruptingPower > enemyResist){
 				corruptEnemy( enemy );
 			} else {
 				float debuffChance = corruptingPower / enemyResist;

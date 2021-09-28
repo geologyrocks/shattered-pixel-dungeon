@@ -219,8 +219,8 @@ public enum HeroClass {
 		// wandOfBlastWave.identify().collect();
 		// WandOfCorrosion wandOfCorrosion = new WandOfCorrosion();
 		// wandOfCorrosion.identify().collect();
-		// WandOfCorruption wandOfCorruption = new WandOfCorruption();
-		// wandOfCorruption.identify().collect();
+		WandOfCorruption wandOfCorruption = new WandOfCorruption();
+		wandOfCorruption.identify().collect();
 		// WandOfDisintegration wandOfDisintegration = new WandOfDisintegration();
 		// wandOfDisintegration.identify().collect();
 		// WandOfFireblast wandOfFireblast = new WandOfFireblast();
@@ -240,8 +240,8 @@ public enum HeroClass {
 		// WandOfWarding wandOfWarding = new WandOfWarding();
 		// wandOfWarding.identify().collect();
 		
-		// CorpseDust corpseDust = new CorpseDust();
-		// corpseDust.doPickUp(hero);
+		CorpseDust corpseDust = new CorpseDust();
+		corpseDust.doPickUp(hero);
 
 		AquaBlast aquaBlast = new AquaBlast();
 		aquaBlast.quantity(9999).collect();
