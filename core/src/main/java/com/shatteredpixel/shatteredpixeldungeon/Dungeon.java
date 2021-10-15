@@ -405,7 +405,7 @@ public class Dungeon {
 		//pos drops every two floors, (numbers 1-2, and 3-4) with a 50% chance for the earlier one each time.
 		int targetPOSLeft = 2 - floorThisSet/2;
 		if (floorThisSet % 2 == 1 && Random.Int(2) == 0) targetPOSLeft --;
-		if (depth <= 10) return false;
+		if (depth <= 5) return false;
 		if (targetPOSLeft < posLeftThisSet) return true;
 		else return false;
 	}
@@ -421,7 +421,7 @@ public class Dungeon {
 		if (souLeftThisSet <= 0) return false;
 
 		int floorThisSet = (depth % 5);
-		if(depth <= 10) return false;
+		if(depth <= 5) return false;
 		//chance is floors left / scrolls left
 		return Random.Int(5 - floorThisSet) < souLeftThisSet;
 	}

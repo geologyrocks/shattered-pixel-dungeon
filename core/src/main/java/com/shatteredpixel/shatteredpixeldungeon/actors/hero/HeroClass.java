@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -83,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlad
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.FragileDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -243,7 +245,7 @@ public enum HeroClass {
 		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
 		crossbow.doEquip(hero);
 
-		Dart darts = new Dart();
+		FragileDart darts = new FragileDart();
 		darts.quantity(9999).collect();
 
 		CloakOfShadows cloak = new CloakOfShadows();
@@ -261,6 +263,8 @@ public enum HeroClass {
 
 		new ScrollOfMagicMapping().identify();
 		new PotionOfInvisibility().identify();
+		PotionOfStrength potion = new PotionOfStrength();
+		potion.identify().quantity(2).collect();
 	}
 
 	private static void initHuntress( Hero hero ) {
@@ -275,14 +279,14 @@ public enum HeroClass {
 		ring.identify().upgrade();
 		ring.doEquip(hero);
 
-//		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
-//		crossbow.doEquip(hero);
+		Crossbow crossbow = (Crossbow)getWeapon("crossbow");
+		crossbow.doEquip(hero);
 
-//		Dart darts = new Dart();
-//		darts.quantity(9999).collect();
+		FragileDart darts = new FragileDart();
+		darts.quantity(9999).collect();
 
 		setQuickslot(bow);
-//		setQuickslot(darts);
+		setQuickslot(darts);
 
 		startEasyMode(hero, 1);
 
@@ -294,28 +298,28 @@ public enum HeroClass {
 		if (weapon == "crossbow"){
 			Crossbow crossbow = new Crossbow();
 			crossbow.identify().collect();
-			crossbow.upgrade(10);
+			crossbow.upgrade(3);
 			crossbow.enchant(Weapon.Enchantment.randomRare());
 			return crossbow;
 		}
 		else if (weapon == "assassinsBlade"){
 			AssassinsBlade assassinsBlade = new AssassinsBlade();
 			assassinsBlade.identify().collect();
-			assassinsBlade.upgrade(10);
+			assassinsBlade.upgrade(3);
 			assassinsBlade.enchant(Weapon.Enchantment.randomRare());
 			return assassinsBlade;
 		}
 		else if (weapon == "magesStaff"){
 			MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
 			staff.identify().collect();
-			staff.upgrade(10);
+			staff.upgrade(2);
 			staff.enchant(Weapon.Enchantment.randomRare());
 			return staff;
 		}
 		else if (weapon == "warhammer"){
 			WarHammer hammer = new WarHammer();
 			hammer.identify().collect();
-			hammer.upgrade(10);
+			hammer.upgrade(3);
 			hammer.enchant(Weapon.Enchantment.randomRare());
 			return hammer;
 		}
@@ -345,9 +349,9 @@ public enum HeroClass {
 		FeatherFall featherFall = new FeatherFall();
 		featherFall.quantity(4).collect();
 
-		ScrollOfEnchantment soe = new ScrollOfEnchantment();
-		soe.quantity(10).collect();
-		setQuickslot(soe);
+		// ScrollOfEnchantment soe = new ScrollOfEnchantment();
+		// soe.quantity(10).collect();
+		// setQuickslot(soe);
 	}
 
 	private static void setQuickslot(Item item){
