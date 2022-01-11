@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -249,12 +250,15 @@ public class TimekeepersHourglass extends Artifact {
 		
 		{
 			type = buffType.POSITIVE;
+			actPriority = BUFF_PRIO-3; //acts after all other buffs, so they are prevented
 		}
 
 		@Override
 		public boolean attachTo(Char target) {
 
 			if (super.attachTo(target)) {
+
+				Invisibility.dispel();
 
 				int usedCharge = Math.min(charge, 2);
 				//buffs always act last, so the stasis buff should end a turn early.
@@ -347,7 +351,7 @@ public class TimekeepersHourglass extends Artifact {
 		public void disarmPressedTraps(){
 			for (int cell : presses){
 				Trap t = Dungeon.level.traps.get(cell);
-				if (t != null) t.disarm();
+				if (t != null && t.disarmedByActivation) t.disarm();
 			}
 
 			presses = new ArrayList<>();
@@ -410,7 +414,7 @@ public class TimekeepersHourglass extends Artifact {
 		}
 
 		@Override
-		public boolean doPickUp( Hero hero ) {
+		public boolean doPickUp(Hero hero, int pos) {
 			TimekeepersHourglass hourglass = hero.belongings.getItem( TimekeepersHourglass.class );
 			if (hourglass != null && !hourglass.cursed) {
 				hourglass.upgrade();
@@ -419,6 +423,7 @@ public class TimekeepersHourglass extends Artifact {
 					GLog.p( Messages.get(this, "maxlevel") );
 				else
 					GLog.i( Messages.get(this, "levelup") );
+				GameScene.pickUp(this, pos);
 				hero.spendAndNext(TIME_TO_PICK_UP);
 				return true;
 			} else {

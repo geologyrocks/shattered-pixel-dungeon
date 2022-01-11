@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -100,11 +101,11 @@ public class Swarm extends Mob {
 				clone.HP = (HP - damage) / 2;
 				clone.pos = Random.element( candidates );
 				clone.state = clone.HUNTING;
-				
-				Dungeon.level.occupyCell(clone);
-				
+
 				GameScene.add( clone, SPLIT_DELAY );
 				Actor.addDelayed( new Pushing( clone, pos, clone.pos ), -1 );
+
+				Dungeon.level.occupyCell(clone);
 				
 				HP -= clone.HP;
 			}
@@ -128,8 +129,8 @@ public class Swarm extends Mob {
 		if (buff( Poison.class ) != null) {
 			Buff.affect( clone, Poison.class ).set(2);
 		}
-		if (buff(Corruption.class ) != null) {
-			Buff.affect( clone, Corruption.class);
+		for (Buff b : buffs(AllyBuff.class)){
+			Buff.affect( clone, b.getClass());
 		}
 		for (Buff b : buffs(ChampionEnemy.class)){
 			Buff.affect( clone, b.getClass());

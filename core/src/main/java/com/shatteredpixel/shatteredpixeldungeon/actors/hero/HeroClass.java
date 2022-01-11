@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -88,7 +89,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Frag
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
@@ -144,6 +144,14 @@ public enum HeroClass {
 				initHuntress( hero );
 				break;
 		}
+
+		for (int s = 0; s < QuickSlot.SIZE; s++){
+			if (Dungeon.quickslot.getItem(s) == null){
+				Dungeon.quickslot.setSlot(s, waterskin);
+				break;
+			}
+		}
+
 	}
 
 	public Badges.Badge masteryBadge() {
