@@ -79,7 +79,7 @@ public class QuickSlotButton extends Button {
 		slot = new ItemSlot() {
 			@Override
 			protected void onClick() {
-				if (!Dungeon.hero.isAlive()){
+				if (!Dungeon.hero.isAlive() || !Dungeon.hero.ready){
 					return;
 				}
 				if (targeting) {
@@ -235,9 +235,11 @@ public class QuickSlotButton extends Button {
 
 			targeting = true;
 			CharSprite sprite = lastTarget.sprite;
-			
-			sprite.parent.addToFront( crossM );
-			crossM.point(sprite.center(crossM));
+
+			if (sprite.parent != null) {
+				sprite.parent.addToFront(crossM);
+				crossM.point(sprite.center(crossM));
+			}
 
 			crossB.point(slot.sprite.center(crossB));
 			crossB.visible = true;
