@@ -14,8 +14,8 @@ allprojects {
         appName = 'Shattered Pixel Dungeon'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon'
 
-        appVersionCode = 588
-        appVersionName = '1.1.2'
+        appVersionCode = 626
+        appVersionName = '1.2.2'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
@@ -24,6 +24,7 @@ allprojects {
         appAndroidTargetSDK = 31
 
         gdxVersion = '1.10.0'
+        gdxControllersVersion = '2.2.1'
         robovmVersion = '2.3.14'
     }
     version = appVersionName
