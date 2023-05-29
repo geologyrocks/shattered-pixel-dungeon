@@ -90,8 +90,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	
 	private static final HashMap<Class<?extends Item>, Integer> ANGULAR_SPEEDS = new HashMap<>();
 	static {
-<<<<<<< HEAD
 		ANGULAR_SPEEDS.put(Dart.class,          0);
+		ANGULAR_SPEEDS.put(FragileDart.class,	0);
 		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
 		ANGULAR_SPEEDS.put(ThrowingSpike.class, 0);
 		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
@@ -99,7 +99,6 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Kunai.class,         0);
 		ANGULAR_SPEEDS.put(Javelin.class,       0);
 		ANGULAR_SPEEDS.put(Trident.class,       0);
-=======
 		ANGULAR_SPEEDS.put(Dart.class,			0);
 		ANGULAR_SPEEDS.put(FragileDart.class,	0);
 		ANGULAR_SPEEDS.put(ThrowingKnife.class,	0);
@@ -108,8 +107,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Kunai.class,			0);
 		ANGULAR_SPEEDS.put(Javelin.class,		0);
 		ANGULAR_SPEEDS.put(Trident.class,		0);
->>>>>>> new dart type
-		
+				
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
 		
